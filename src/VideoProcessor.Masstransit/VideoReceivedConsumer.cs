@@ -7,11 +7,15 @@ namespace VideoProcessor.Masstransit;
 
 public class VideoReceivedConsumer(
     ILogger<VideoReceivedConsumer> logger,
-    IUseCase<VideoReceived> useCase)
+    IUseCase<VideoReceived> useCase,
+    IDispatcher dispatcher)
     : IConsumer<VideoReceived>
 {
-    public Task Consume(ConsumeContext<VideoReceived> context)
+    public async Task Consume(ConsumeContext<VideoReceived> context)
     {
-        return useCase.ExecuteAsync(context.Message);
+        using var scope = logger.BeginScope("Processing   {JobId} for {UserId}", context.Message.JobId,
+            context.Message.UserId);
+        await dispatcher.PublishAsync(new VideoProcessingStarted(context.Message.UserId, context.Message.JobId));
+        await useCase.ExecuteAsync(context.Message);
     }
 }
