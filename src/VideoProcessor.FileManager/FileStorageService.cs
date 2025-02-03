@@ -22,7 +22,7 @@ public class S3Service(ILogger<S3Service> logger, IAmazonS3 s3Client) : IFileSto
 
     public async Task SaveFileAsync(string filePath, string fileKey)
     {
-        logger.LogInformation($"Uploading file {filePath} to {fileKey} on hackathon-video-processor bucket.");
+        logger.LogInformation($"Uploading file {filePath} to {fileKey} on {Bucket} bucket.");
         await s3Client.UploadObjectFromFilePathAsync(Bucket, fileKey, filePath, default, default);
     }
 }

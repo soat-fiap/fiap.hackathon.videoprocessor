@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using Hackathon.Video.SharedKernel;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -30,6 +31,6 @@ public static class ServiceCollectionsExtensions
             });
         });
 
-        // services.AddScoped<IDispatcher, Dispatcher>();
+        services.AddScoped<IDispatcher, Dispatcher>();
     }
 }
