@@ -5,6 +5,12 @@ locals {
   aws_region            = var.region
 }
 
+resource "kubernetes_namespace" "fiap_videoprocessor" {
+  metadata {
+    name = "fiap-videoprocessor"
+  }
+}
+
 ##############################
 # CONFIGS/SECRETS
 ##############################
@@ -13,6 +19,7 @@ locals {
 resource "kubernetes_config_map_v1" "config_map_api" {
   metadata {
     name      = "configmap-videoprocessor"
+    namespace = kubernetes_namespace.fiap_videoprocessor.metadata.0.name
     labels = {
       "app"       = "videoprocessor"
       "terraform" = true
@@ -27,15 +34,16 @@ resource "kubernetes_config_map_v1" "config_map_api" {
 resource "kubernetes_secret" "secret_api" {
   metadata {
     name      = "secret-videoprocessor"
+    namespace = kubernetes_namespace.fiap_videoprocessor.metadata.0.name
     labels = {
       app         = "api-pod"
       "terraform" = true
     }
   }
   data = {
-    "AWS_SECRET_ACCESS_KEY"  = local.aws_secret_access_key
-    "AWS_ACCESS_KEY_ID"      = local.aws_access_key
-    "AWS_REGION"             = local.aws_region
+    "AWS_SECRET_ACCESS_KEY" = local.aws_secret_access_key
+    "AWS_ACCESS_KEY_ID"     = local.aws_access_key
+    "AWS_REGION"            = local.aws_region
   }
   type = "Opaque"
 }
@@ -43,28 +51,6 @@ resource "kubernetes_secret" "secret_api" {
 ####################################
 # API
 ####################################
-
-# resource "kubernetes_service" "videoprocessor-svc" {
-#   metadata {
-#     name      = "api-internal"
-#     annotations = {
-#       "service.beta.kubernetes.io/aws-load-balancer-type"   = "nlb"
-#       "service.beta.kubernetes.io/aws-load-balancer-scheme" = "internal"
-#     }
-#   }
-#   spec {
-#     port {
-#       port        = 80
-#       target_port = 8080
-#       node_port   = 30007
-#       protocol    = "TCP"
-#     }
-#     type = "LoadBalancer"
-#     selector = {
-#       app : "videoprocessor"
-#     }
-#   }
-# }
 
 resource "kubernetes_deployment" "deployment_videoprocessor" {
   depends_on = [
@@ -74,6 +60,7 @@ resource "kubernetes_deployment" "deployment_videoprocessor" {
 
   metadata {
     name      = "deployment-videoprocessor"
+    namespace = kubernetes_namespace.fiap_videoprocessor.metadata.0.name
     labels = {
       app         = "videoprocessor"
       "terraform" = true
@@ -156,10 +143,11 @@ resource "kubernetes_deployment" "deployment_videoprocessor" {
 resource "kubernetes_horizontal_pod_autoscaler_v2" "hpa_api" {
   metadata {
     name      = "hpa-videoprocessor"
+    namespace = kubernetes_namespace.fiap_videoprocessor.metadata.0.name
   }
   spec {
     max_replicas = 5
-    min_replicas = 3
+    min_replicas = 2
     scale_target_ref {
       api_version = "apps/v1"
       kind        = "Deployment"
