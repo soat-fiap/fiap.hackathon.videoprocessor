@@ -197,7 +197,6 @@ jobs:
           cat <<EOF > terraform/api.auto.tfvars
           eks_cluster_name = "${{ vars.BMB_EKS_CLUSTER_NAME }}"
           api_docker_image = "${{ env.API_IMAGE_TAG }}"
-          internal_elb_name = "${{ vars.BMB_INTERNAL_LB_NAME }}"
           api_access_key_id = "${{ secrets.AWS_API_ACCESS_KEY_ID }}"
           api_secret_access_key = "${{ secrets.AWS_API_SECRET_ACCESS_KEY }}"
           EOF
