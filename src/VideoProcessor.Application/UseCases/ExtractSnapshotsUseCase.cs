@@ -26,12 +26,12 @@ public class ExtractSnapshotsUseCase : IUseCase<VideoReceived>
         
         const string videoFileName = "video.mkv";
 
-        var localJobFolder = Path.Combine(Directory.GetCurrentDirectory(), request.JobId);
+        var localJobFolder = Path.Combine(Directory.GetCurrentDirectory(), request.JobId.ToString());
         var videoFilePath = Path.Combine(localJobFolder, videoFileName);
         const string zipFileName = "images.zip";
         var outputFolder = Path.Combine(localJobFolder, "snapshots");
         var files = new List<string>();
-        var destinationZipFilePath = Path.Combine(Directory.GetCurrentDirectory(), request.JobId, zipFileName);
+        var destinationZipFilePath = Path.Combine(Directory.GetCurrentDirectory(), request.JobId.ToString(), zipFileName);
         files.Add(destinationZipFilePath);
 
         try
