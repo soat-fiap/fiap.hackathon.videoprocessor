@@ -117,11 +117,11 @@ resource "kubernetes_deployment" "deployment_videoprocessor" {
           resources {
             requests = {
               cpu    = "100m"
-              memory = "120Mi"
+              memory = "200Mi"
             }
             limits = {
-              cpu    = "150m"
-              memory = "200Mi"
+              cpu    = "200m"
+              memory = "400Mi"
             }
           }
           env_from {
@@ -146,7 +146,7 @@ resource "kubernetes_horizontal_pod_autoscaler_v2" "hpa_api" {
     namespace = kubernetes_namespace.fiap_videoprocessor.metadata.0.name
   }
   spec {
-    max_replicas = 5
+    max_replicas = 6
     min_replicas = 2
     scale_target_ref {
       api_version = "apps/v1"
@@ -161,6 +161,18 @@ resource "kubernetes_horizontal_pod_autoscaler_v2" "hpa_api" {
         name      = "cpu"
         target {
           average_utilization = 65
+          type                = "Utilization"
+        }
+      }
+    }
+
+    metric {
+      type = "ContainerResource"
+      container_resource {
+        container = "videoprocessor-container"
+        name      = "memory"
+        target {
+          average_utilization = 75
           type                = "Utilization"
         }
       }
