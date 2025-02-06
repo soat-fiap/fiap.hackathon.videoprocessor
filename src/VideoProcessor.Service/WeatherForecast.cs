@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace VideoProcessor.Service;
 
+[ExcludeFromCodeCoverage]
 public class WeatherForecast
 {
     public DateTime Date { get; set; }
