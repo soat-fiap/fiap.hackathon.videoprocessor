@@ -18,5 +18,5 @@ This repository is part of a project focused on processing videos to extract ima
 
 This repository is essential for processing videos and extracting images, providing a robust and scalable solution for video processing within the project.
 
-### Services Communication (ECST)
+### Services Communication
 ![image](comunicacao_servicos-HACKATHON.drawio.png)
