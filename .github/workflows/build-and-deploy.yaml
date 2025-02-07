@@ -9,6 +9,11 @@ on:
       - '.gitignore'
   pull_request:
     types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "Manual deploy"
+        default: "Manual deploy"
 
 env:
   REGISTRY: ghcr.io
